@@ -62,7 +62,7 @@ module.exports = class SocketIOService {
                 });
             } catch (err) {
                 console.error(err);
-                this.handlerErrors(err);
+                this.errorHandler(err);
             }
         });
     }
@@ -88,7 +88,7 @@ module.exports = class SocketIOService {
             await newUser.save();
             return user;
         } catch (err) {
-            this.handlerErrors(err);
+            this.errorHandler(err);
         }
     }
 
@@ -96,11 +96,11 @@ module.exports = class SocketIOService {
         try {
             const user = await User.findOne({ id: id });
             if (!user) {
-                this.handlerErrors(new Error("User not Found"))
+                this.errorHandler(new Error("User not Found"))
             }
             return user;
         } catch (err) {
-            this.handlerErrors(err);
+            this.errorHandler(err);
         }
     }
 
@@ -110,7 +110,7 @@ module.exports = class SocketIOService {
             const users = await User.find();
             return users;
         } catch (err) {
-            this.handlerErrors(err);
+            this.errorHandler(err);
         }
     }
 
@@ -123,7 +123,7 @@ module.exports = class SocketIOService {
             }
             return [];
         } catch (err) {
-            this.handlerErrors(err);
+            this.errorHandler(err);
         }
     }
 
@@ -137,8 +137,10 @@ module.exports = class SocketIOService {
     }
 
 
-    handlerErrors(err) {
+    errorHandler(err) {
         console.error(err);
+        this.io.emit("error", err);
+        return;
     }
 
 }
